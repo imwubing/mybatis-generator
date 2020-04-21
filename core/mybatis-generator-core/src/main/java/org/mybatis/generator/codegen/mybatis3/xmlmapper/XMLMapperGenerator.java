@@ -1,5 +1,5 @@
 /**
- *    Copyright 2006-2016 the original author or authors.
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.ResultMapWithou
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.SelectByExampleWithBLOBsElementGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.SelectByExampleWithoutBLOBsElementGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.SelectByPrimaryKeyElementGenerator;
+import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.SelectBySelectiveElementGenerator;
+import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.SelectOneBySelectiveElementGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.UpdateByExampleSelectiveElementGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.UpdateByExampleWithBLOBsElementGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.UpdateByExampleWithoutBLOBsElementGenerator;
@@ -45,9 +47,7 @@ import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.UpdateByPrimary
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.elements.UpdateByPrimaryKeyWithoutBLOBsElementGenerator;
 
 /**
- * 
  * @author Jeff Butler
- * 
  */
 public class XMLMapperGenerator extends AbstractXmlGenerator {
 
@@ -72,20 +72,25 @@ public class XMLMapperGenerator extends AbstractXmlGenerator {
         addMyBatis3UpdateByExampleWhereClauseElement(answer);
         addBaseColumnListElement(answer);
         addBlobColumnListElement(answer);
-        addSelectByExampleWithBLOBsElement(answer);
-        addSelectByExampleWithoutBLOBsElement(answer);
+
+        //addSelectByExampleWithBLOBsElement(answer);
+        //addSelectByExampleWithoutBLOBsElement(answer);
         addSelectByPrimaryKeyElement(answer);
+        addSelectBySelectiveElement(answer);
+        addSelectOneBySelectiveElement(answer);
+
         addDeleteByPrimaryKeyElement(answer);
-        addDeleteByExampleElement(answer);
+        //addDeleteByExampleElement(answer);
+
         addInsertElement(answer);
-        addInsertSelectiveElement(answer);
-        addCountByExampleElement(answer);
-        addUpdateByExampleSelectiveElement(answer);
-        addUpdateByExampleWithBLOBsElement(answer);
-        addUpdateByExampleWithoutBLOBsElement(answer);
+        //addInsertSelectiveElement(answer);
+        //addCountByExampleElement(answer);
+        //addUpdateByExampleSelectiveElement(answer);
+        //addUpdateByExampleWithBLOBsElement(answer);
+        //addUpdateByExampleWithoutBLOBsElement(answer);
         addUpdateByPrimaryKeySelectiveElement(answer);
-        addUpdateByPrimaryKeyWithBLOBsElement(answer);
-        addUpdateByPrimaryKeyWithoutBLOBsElement(answer);
+        //addUpdateByPrimaryKeyWithBLOBsElement(answer);
+        //addUpdateByPrimaryKeyWithoutBLOBsElement(answer);
 
         return answer;
     }
@@ -221,6 +226,19 @@ public class XMLMapperGenerator extends AbstractXmlGenerator {
             AbstractXmlElementGenerator elementGenerator = new UpdateByPrimaryKeySelectiveElementGenerator();
             initializeAndExecuteGenerator(elementGenerator, parentElement);
         }
+    }
+
+    protected void addSelectBySelectiveElement(
+            XmlElement parentElement) {
+        //if (introspectedTable.getRules().generateUpdateByPrimaryKeySelective()) {
+        AbstractXmlElementGenerator elementGenerator = new SelectBySelectiveElementGenerator();
+        initializeAndExecuteGenerator(elementGenerator, parentElement);
+        //}
+    }
+
+    protected void addSelectOneBySelectiveElement(XmlElement parentElement) {
+        AbstractXmlElementGenerator elementGenerator = new SelectOneBySelectiveElementGenerator();
+        initializeAndExecuteGenerator(elementGenerator, parentElement);
     }
 
     protected void addUpdateByPrimaryKeyWithBLOBsElement(

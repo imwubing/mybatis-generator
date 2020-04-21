@@ -1,5 +1,5 @@
 /**
- *    Copyright 2006-2016 the original author or authors.
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -38,9 +38,7 @@ import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.RootClassInfo;
 
 /**
- * 
  * @author Jeff Butler
- * 
  */
 public class BaseRecordGenerator extends AbstractJavaGenerator {
 
@@ -60,6 +58,12 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
                 introspectedTable.getBaseRecordType());
         TopLevelClass topLevelClass = new TopLevelClass(type);
         topLevelClass.setVisibility(JavaVisibility.PUBLIC);
+        topLevelClass.addAnnotation("@Getter");
+        topLevelClass.addAnnotation("@Setter");
+        topLevelClass.addAnnotation("@ApiModel");
+        topLevelClass.addImportedType("io.swagger.annotations.ApiModel");
+        topLevelClass.addImportedType("lombok.Setter");
+        topLevelClass.addImportedType("lombok.Getter");
         commentGenerator.addJavaFileComment(topLevelClass);
 
         FullyQualifiedJavaType superClass = getSuperClass();
@@ -73,12 +77,12 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
 
         if (introspectedTable.isConstructorBased()) {
             addParameterizedConstructor(topLevelClass);
-            
+
             if (!introspectedTable.isImmutable()) {
                 addDefaultConstructor(topLevelClass);
             }
         }
-        
+
         String rootClass = getRootClass();
         for (IntrospectedColumn introspectedColumn : introspectedColumns) {
             if (RootClassInfo.getInstance(rootClass, warnings)
@@ -90,6 +94,8 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
             if (plugins.modelFieldGenerated(field, topLevelClass,
                     introspectedColumn, introspectedTable,
                     Plugin.ModelClassType.BASE_RECORD)) {
+                field.addAnnotation("@ApiModelProperty(\"" + introspectedColumn.getRemarks() + "\")");
+                topLevelClass.addImportedType("io.swagger.annotations.ApiModelProperty");
                 topLevelClass.addField(field);
                 topLevelClass.addImportedType(field.getType());
             }
@@ -98,7 +104,7 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
             if (plugins.modelGetterMethodGenerated(method, topLevelClass,
                     introspectedColumn, introspectedTable,
                     Plugin.ModelClassType.BASE_RECORD)) {
-                topLevelClass.addMethod(method);
+                //topLevelClass.addMethod(method);
             }
 
             if (!introspectedTable.isImmutable()) {
@@ -106,7 +112,7 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
                 if (plugins.modelSetterMethodGenerated(method, topLevelClass,
                         introspectedColumn, introspectedTable,
                         Plugin.ModelClassType.BASE_RECORD)) {
-                    topLevelClass.addMethod(method);
+                    //topLevelClass.addMethod(method);
                 }
             }
         }
@@ -154,15 +160,15 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
         context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
 
         List<IntrospectedColumn> constructorColumns =
-            includeBLOBColumns() ? introspectedTable.getAllColumns() :
-                introspectedTable.getNonBLOBColumns();
-            
+                includeBLOBColumns() ? introspectedTable.getAllColumns() :
+                        introspectedTable.getNonBLOBColumns();
+
         for (IntrospectedColumn introspectedColumn : constructorColumns) {
             method.addParameter(new Parameter(introspectedColumn.getFullyQualifiedJavaType(),
                     introspectedColumn.getJavaProperty()));
             topLevelClass.addImportedType(introspectedColumn.getFullyQualifiedJavaType());
         }
-        
+
         StringBuilder sb = new StringBuilder();
         if (introspectedTable.getRules().generatePrimaryKeyClass()) {
             boolean comma = false;
@@ -181,7 +187,7 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
         }
 
         List<IntrospectedColumn> introspectedColumns = getColumnsInThisClass();
-        
+
         for (IntrospectedColumn introspectedColumn : introspectedColumns) {
             sb.setLength(0);
             sb.append("this."); //$NON-NLS-1$
@@ -194,7 +200,7 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
 
         topLevelClass.addMethod(method);
     }
-    
+
     private List<IntrospectedColumn> getColumnsInThisClass() {
         List<IntrospectedColumn> introspectedColumns;
         if (includePrimaryKeyColumns()) {
@@ -211,7 +217,7 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
                 introspectedColumns = introspectedTable.getBaseColumns();
             }
         }
-        
+
         return introspectedColumns;
     }
 }

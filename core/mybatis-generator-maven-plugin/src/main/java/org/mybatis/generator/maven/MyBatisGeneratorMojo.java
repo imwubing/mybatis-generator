@@ -1,5 +1,5 @@
 /**
- *    Copyright 2006-2016 the original author or authors.
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -131,6 +131,7 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     private boolean skip;
 
     public void execute() throws MojoExecutionException {
+        getLog().info("test by bing ::::::::::::::::: test by bing");
         if (skip) {
             getLog().info( "MyBatis generator is skipped." );
             return;
